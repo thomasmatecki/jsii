@@ -111,6 +111,9 @@ export class KernelHost {
           },
         )}`;
       };
+      throw new Error('h2');
+    } else {
+      throw new Error('h1');
     }
 
     try {
