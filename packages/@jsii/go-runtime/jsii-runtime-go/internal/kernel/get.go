@@ -3,13 +3,15 @@ package kernel
 import "github.com/aws/jsii-runtime-go/internal/api"
 
 type GetProps struct {
-	Property string        `json:"property"`
-	ObjRef   api.ObjectRef `json:"objref"`
+	Property   string        `json:"property"`
+	ObjRef     api.ObjectRef `json:"objref"`
+	StackTrace string			   `json:"stacktrace"`
 }
 
 type StaticGetProps struct {
-	FQN      api.FQN `json:"fqn"`
-	Property string  `json:"property"`
+	FQN        api.FQN `json:"fqn"`
+	Property   string  `json:"property"`
+	StackTrace string  `json:"stacktrace"`
 }
 
 type GetResponse struct {
@@ -22,6 +24,7 @@ func (c *Client) Get(props GetProps) (response GetResponse, err error) {
 		kernelRequest
 		GetProps
 	}
+	props.StackTrace = captureStack()
 	err = c.request(request{kernelRequest{"get"}, props}, &response)
 	return
 }
@@ -31,6 +34,7 @@ func (c *Client) SGet(props StaticGetProps) (response GetResponse, err error) {
 		kernelRequest
 		StaticGetProps
 	}
+	props.StackTrace = captureStack()
 	err = c.request(request{kernelRequest{"sget"}, props}, &response)
 	return
 }

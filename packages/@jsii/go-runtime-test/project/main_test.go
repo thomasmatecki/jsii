@@ -239,3 +239,8 @@ func TestReturnsSpecialParam(t *testing.T) {
 		t.Errorf("Expected type: %s; Actual: %s", expected, actual)
 	}
 }
+
+func TestStackTrace(t *testing.T) {
+	c := initCalculator(0);
+	c.StackTrace()
+}

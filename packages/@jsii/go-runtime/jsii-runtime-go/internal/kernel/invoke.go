@@ -1,17 +1,22 @@
 package kernel
 
-import "github.com/aws/jsii-runtime-go/internal/api"
+import (
+	"runtime/debug"
+	"github.com/aws/jsii-runtime-go/internal/api"
+)
 
 type InvokeProps struct {
-	Method    string        `json:"method"`
-	Arguments []interface{} `json:"args"`
-	ObjRef    api.ObjectRef `json:"objref"`
+	Method     string        `json:"method"`
+	Arguments  []interface{} `json:"args"`
+	ObjRef     api.ObjectRef `json:"objref"`
+	StackTrace string				 `json:"stacktrace"`
 }
 
 type StaticInvokeProps struct {
-	FQN       api.FQN       `json:"fqn"`
-	Method    string        `json:"method"`
-	Arguments []interface{} `json:"args"`
+	FQN        api.FQN       `json:"fqn"`
+	Method     string        `json:"method"`
+	Arguments  []interface{} `json:"args"`
+	StackTrace string				 `json:"stacktrace"`
 }
 
 type InvokeResponse struct {
@@ -24,6 +29,7 @@ func (c *Client) Invoke(props InvokeProps) (response InvokeResponse, err error) 
 		kernelRequest
 		InvokeProps
 	}
+	props.StackTrace = captureStack()
 	err = c.request(request{kernelRequest{"invoke"}, props}, &response)
 	return
 }
@@ -33,6 +39,7 @@ func (c *Client) SInvoke(props StaticInvokeProps) (response InvokeResponse, err 
 		kernelRequest
 		StaticInvokeProps
 	}
+	props.StackTrace = captureStack()
 	err = c.request(request{kernelRequest{"sinvoke"}, props}, &response)
 	return
 }
@@ -42,4 +49,8 @@ func (c *Client) SInvoke(props StaticInvokeProps) (response InvokeResponse, err 
 func (r *InvokeResponse) UnmarshalJSON(data []byte) error {
 	type response InvokeResponse
 	return unmarshalKernelResponse(data, (*response)(r), r)
+}
+
+func captureStack() string {
+	return string(debug.Stack());
 }
