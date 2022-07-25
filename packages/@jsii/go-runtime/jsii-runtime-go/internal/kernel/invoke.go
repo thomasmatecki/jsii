@@ -2,6 +2,8 @@ package kernel
 
 import (
 	"runtime/debug"
+	"strings"
+
 	"github.com/aws/jsii-runtime-go/internal/api"
 )
 
@@ -9,14 +11,14 @@ type InvokeProps struct {
 	Method     string        `json:"method"`
 	Arguments  []interface{} `json:"args"`
 	ObjRef     api.ObjectRef `json:"objref"`
-	StackTrace string				 `json:"stacktrace"`
+	StackTrace []string				 `json:"stacktrace"`
 }
 
 type StaticInvokeProps struct {
 	FQN        api.FQN       `json:"fqn"`
 	Method     string        `json:"method"`
 	Arguments  []interface{} `json:"args"`
-	StackTrace string				 `json:"stacktrace"`
+	StackTrace []string				 `json:"stacktrace"`
 }
 
 type InvokeResponse struct {
@@ -51,6 +53,6 @@ func (r *InvokeResponse) UnmarshalJSON(data []byte) error {
 	return unmarshalKernelResponse(data, (*response)(r), r)
 }
 
-func captureStack() string {
-	return string(debug.Stack());
+func captureStack() []string {
+	return strings.Split(string(debug.Stack()), "\n");
 }

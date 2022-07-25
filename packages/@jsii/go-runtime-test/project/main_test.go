@@ -242,5 +242,5 @@ func TestReturnsSpecialParam(t *testing.T) {
 
 func TestStackTrace(t *testing.T) {
 	c := initCalculator(0);
-	panic(c.StackTrace());
+	t.Log(*c.StackTrace());
 }
