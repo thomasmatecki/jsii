@@ -52,6 +52,12 @@ class TestErrorHandling:
         baz = Baz()
         baz_interface_func(baz)
 
+    def test_stack_trace(self):
+        """Checks that jsii includes the TS stack trace."""
+        obj = jsii_calc.Calculator()
+        with open("foo", "w") as file:
+            file.write(obj.stack_trace)
+
 
 def find_struct_bases(x):
     ret = []

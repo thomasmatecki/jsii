@@ -377,6 +377,13 @@ export class Calculator extends composition.CompositeOperation {
     return this.unionProperty.value;
   }
 
+  /**
+   * Returns teh stack trace.
+   */
+  public get stackTrace() {
+    return new Error().stack;
+  }
+
   private addOperation(op: string, value: NumericValue) {
     if (this.maxValue && value.value > this.maxValue) {
       throw new Error(
