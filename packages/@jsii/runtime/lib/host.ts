@@ -21,21 +21,6 @@ export class KernelHost {
       return; // done
     }
 
-    const langTrace = [
-      'pythonClass1.method1 (/magic/path/to/python-file.py:100:11)',
-      'pythonClass2.method2 (/magic/path/to/python-file-2.py:200:22)',
-      'pythonClass3.method3 (/magic/path/to/python-file-3.py:300:33)',
-      'pythonClass4.method4 (/magic/path/to/python-file-4.py:400:44)',
-    ];
-
-    Error.prepareStackTrace = (err: Error, _stackTraces: NodeJS.CallSite[]) => {
-      return `${err.stack ?? ''}\n    at ${langTrace.reduce(
-        (prev, current, _idx, _arr: string[]) => {
-          return `${prev}\n    at ${current}`;
-        },
-      )}`;
-    };
-
     this.processRequest(req, () => {
       // Schedule the call to run on the next event loop iteration to
       // avoid recursion.
@@ -114,6 +99,19 @@ export class KernelHost {
 
     const apiReq = req;
     const fn = this.findApi(apiReq.api);
+
+    const hostStackTrace: string[] =
+      'stacktrace' in req ? (req as any).stacktrace : undefined;
+
+    if (hostStackTrace) {
+      Error.prepareStackTrace = (err: Error, _: NodeJS.CallSite[]) => {
+        return `${err.stack ?? ''}\n    at ${hostStackTrace.reduce(
+          (prev, current, _idx, _arr: string[]) => {
+            return `${prev}\n    at ${current}`;
+          },
+        )}`;
+      };
+    }
 
     try {
       const ret = fn.call(this.kernel, req);
