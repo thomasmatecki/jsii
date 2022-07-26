@@ -5,13 +5,13 @@ import "github.com/aws/jsii-runtime-go/internal/api"
 type GetProps struct {
 	Property   string        `json:"property"`
 	ObjRef     api.ObjectRef `json:"objref"`
-	StackTrace string			   `json:"stacktrace"`
+	StackTrace []string			 `json:"stacktrace"`
 }
 
 type StaticGetProps struct {
-	FQN        api.FQN `json:"fqn"`
-	Property   string  `json:"property"`
-	StackTrace string  `json:"stacktrace"`
+	FQN        api.FQN  `json:"fqn"`
+	Property   string   `json:"property"`
+	StackTrace []string `json:"stacktrace"`
 }
 
 type GetResponse struct {
