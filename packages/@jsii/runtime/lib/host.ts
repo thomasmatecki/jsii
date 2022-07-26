@@ -148,12 +148,12 @@ export class KernelHost {
 
         const promise = ret;
         promise
-          .then((val) => {
+          .then((val: any) => {
             this.debug('promise succeeded:', val);
             this.writeOkay(val);
             next();
           })
-          .catch((e) => {
+          .catch((e: any) => {
             this.debug('promise failed:', e);
             this.writeError(e);
             next();

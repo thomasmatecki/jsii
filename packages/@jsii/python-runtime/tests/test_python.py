@@ -54,7 +54,9 @@ class TestErrorHandling:
 
     def test_stack_trace(self):
         """Checks that jsii includes the TS stack trace."""
-        obj = jsii_calc.Calculator()
+        obj = jsii_calc.Calculator(maximum_value=1)
+        obj.add(3)
+
         with open("foo", "w") as file:
             file.write(obj.stack_trace)
 

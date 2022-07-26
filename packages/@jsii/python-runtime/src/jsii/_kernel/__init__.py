@@ -1,6 +1,7 @@
 import datetime
 import inspect
 import itertools
+import traceback
 from types import FunctionType, MethodType, BuiltinFunctionType, LambdaType
 
 from typing import Any, List, Optional, Type, Union
@@ -266,7 +267,14 @@ class Kernel(metaclass=Singleton):
     # TODO: Do we want to return anything from this method? Is the return value useful
     #       to anyone?
     def load(self, name: str, version: str, tarball: str) -> None:
-        self.provider.load(LoadRequest(name=name, version=version, tarball=tarball))
+        self.provider.load(
+            LoadRequest(
+                name=name,
+                version=version,
+                tarball=tarball,
+                #stacktrace=["magic-trace", "trace-2"],
+            )
+        )
 
     def invokeBinScript(
         self, pkgname: str, script: str, args: Optional[List[Any]] = None

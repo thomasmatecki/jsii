@@ -32,6 +32,7 @@ class LoadRequest:
     name: str
     version: str
     tarball: str
+    #stacktrace: List[str]
 
 
 @attr.s(auto_attribs=True, frozen=True, slots=True)
