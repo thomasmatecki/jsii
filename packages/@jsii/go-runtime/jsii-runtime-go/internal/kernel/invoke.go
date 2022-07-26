@@ -1,9 +1,11 @@
 package kernel
 
 import (
+	"bytes"
+	"fmt"
 	"runtime/debug"
-	"strings"
 
+	"github.com/DataDog/gostackparse"
 	"github.com/aws/jsii-runtime-go/internal/api"
 )
 
@@ -54,5 +56,15 @@ func (r *InvokeResponse) UnmarshalJSON(data []byte) error {
 }
 
 func captureStack() []string {
-	return strings.Split(string(debug.Stack()), "\n");
+	routines, _ := gostackparse.Parse(bytes.NewReader(debug.Stack()));
+	stack := routines[0].Stack
+	trace := []string{};
+	for i := 0; i < len(stack); i++ {
+		frame := stack[i];
+		trace = append(trace, fmt.Sprintf("%s (%s:%d)",
+			frame.Func,
+			frame.File,
+			frame.Line))
+	}
+	return trace;
 }
