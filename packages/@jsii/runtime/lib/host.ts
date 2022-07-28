@@ -105,7 +105,15 @@ export class KernelHost {
 
     if (hostStackTrace) {
       Error.prepareStackTrace = (err: Error, _: NodeJS.CallSite[]) => {
-        return `${err.stack ?? ''}\n    at ${hostStackTrace.reduce(
+        const jsTraceArray = (err.stack ?? '').split('\n');
+        const jsTraceStr = jsTraceArray.reduce(
+          (prev, current, _idx, _arr: string[]) => {
+            return current.includes('Kernel') || current.includes('Immediate')
+              ? `${prev}`
+              : `${prev}\n${current}`;
+          },
+        );
+        return `${jsTraceStr}\n    at ${hostStackTrace.reduce(
           (prev, current, _idx, _arr: string[]) => {
             return `${prev}\n    at ${current}`;
           },

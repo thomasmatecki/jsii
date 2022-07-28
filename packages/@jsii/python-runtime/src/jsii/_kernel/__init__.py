@@ -272,7 +272,7 @@ class Kernel(metaclass=Singleton):
                 name=name,
                 version=version,
                 tarball=tarball,
-                #stacktrace=["magic-trace", "trace-2"],
+                stacktrace=self.__get_stack_trace(),
             )
         )
 
@@ -364,6 +364,7 @@ class Kernel(metaclass=Singleton):
             InvokeRequest(
                 objref=obj.__jsii_ref__,
                 method=method,
+                stacktrace=self.__get_stack_trace(),
                 args=_make_reference_for_native(self, args),
             )
         )
@@ -452,3 +453,12 @@ class Kernel(metaclass=Singleton):
         resp = self.provider.stats(StatsRequest())
 
         return Statistics(object_count=resp.objectCount)
+
+    def __get_stack_trace(self):
+        formatted_traces = []
+        traces = traceback.format_stack()
+        for trace in traces:
+            if not "jsii/_kernel" in trace:
+                formatted_traces.insert(0, trace.strip())
+
+        return formatted_traces

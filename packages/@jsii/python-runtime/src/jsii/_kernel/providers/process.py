@@ -145,18 +145,11 @@ def ohook(d):
 
 
 def jdefault(obj):
-    # if isinstance(obj, Request):
-    #    attr_dict = {s: getattr(obj, s, None) for s in obj.__slots__}
-    #    attr_dict["stacktrace"] = obj.stacktrace
-    #    return attr_dict
     if hasattr(obj, "__jsii_ref__"):
-        raise Exception("jsii_ref")
         return _unstructure_ref(obj.__jsii_ref__)
     if isinstance(obj, datetime.datetime) and obj.tzinfo is not None:
-        raise Exception("no tzinfo")
         return {"$jsii.date": obj.isoformat()}
     elif isinstance(obj, datetime.datetime):
-        raise Exception("datetime")
         raise TypeError("Naive datetimes are not supported, please add a timzone.")
     raise TypeError("Don't know how to convert object to JSON: %r" % obj)
 
@@ -317,8 +310,8 @@ class _NodeProcess:
     def send(
         self, request: KernelRequest, response_type: Type[KernelResponse]
     ) -> KernelResponse:
-        # better_request = attr.evolve(request, stacktrace=traceback.format_stack)
-        data = json.dumps(request, default=jdefault).encode("utf8")
+        req_dict = self._serializer.unstructure(request)
+        data = json.dumps(req_dict, default=jdefault).encode("utf8")
 
         # Send our data, ensure that it is framed with a trailing \n
         self._process.stdin.write(b"%b\n" % (data,))

@@ -32,7 +32,7 @@ class LoadRequest:
     name: str
     version: str
     tarball: str
-    #stacktrace: List[str]
+    stacktrace: Optional[List[str]] = attr.Factory(list)
 
 
 @attr.s(auto_attribs=True, frozen=True, slots=True)
@@ -139,6 +139,7 @@ class InvokeRequest:
     objref: ObjRef
     method: str
     args: Optional[List[Any]] = attr.Factory(list)
+    stacktrace: Optional[List[str]] = attr.Factory(list)
 
 
 @attr.s(auto_attribs=True, frozen=True, slots=True)
